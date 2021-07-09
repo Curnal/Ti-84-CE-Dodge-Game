@@ -1,0 +1,347 @@
+	section	.text,"ax",@progbits
+	assume	adl = 1
+	section	.text,"ax",@progbits
+	public	_main
+_main:
+	ld	hl, -12
+	call	__frameset
+	ld	hl, 152
+	ld	(ix + -6), hl
+	ld	hl, 106
+	ld	(ix + -9), hl
+	call	_gfx_Begin
+	ld	hl, L_.str
+	push	hl
+	call	_PrintCentered
+	pop	hl
+BB0_1:
+	call	_os_GetCSC
+	or	a, a
+	jq	z, BB0_1
+	ld	iy, -3145600
+	call	_os_ClrLCD
+	call	_os_HomeUp
+	call	_os_DrawStatusBar
+	ld	hl, (_background)
+	ld	(hl), 16
+	ld	iy, (_background)
+	ld	(iy + 1), 27
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	ld	hl, 52
+	push	hl
+	ld	hl, _global_palette
+	push	hl
+	call	_gfx_SetPalette
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_gfx_FillScreen
+	pop	hl
+	or	a, a
+	sbc	hl, hl
+	push	hl
+	call	_gfx_SetTransparentColor
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_gfx_SetDraw
+	pop	hl
+	ld	hl, 5
+BB0_3:
+	add	hl, bc
+	or	a, a
+	sbc	hl, bc
+	jq	z, BB0_5
+	ld	(ix + -3), hl
+	call	_random
+	ld	bc, 289
+	call	__iremu
+	ld	(ix + -12), hl
+	call	_random
+	ld	bc, 209
+	call	__iremu
+	push	hl
+	ld	hl, (ix + -12)
+	push	hl
+	ld	hl, _bgcirc_data
+	push	hl
+	call	_gfx_Sprite_NoClip
+	ld	hl, (ix + -3)
+	pop	de
+	pop	de
+	pop	de
+	dec	hl
+	jq	BB0_3
+BB0_5:
+	ld	hl, (_background)
+	ld	de, 106
+	push	de
+	ld	de, 152
+	push	de
+	push	hl
+	call	_gfx_GetSprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, 106
+	push	hl
+	ld	hl, 152
+	push	hl
+	call	_DrawSprite
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_gfx_Blit
+	pop	hl
+	call	_gfx_End
+BB0_6:
+	call	_kb_Scan
+	ld	hl, -720866
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	or	a, a
+	jq	nz, BB0_7
+	jq	BB0_16
+BB0_7:
+	ld.sis	bc, 255
+	call	__sand
+	ld	(ix + -3), l
+	ld	(ix + -2), h
+	ld	a, l
+	ld	iy, (ix + -6)
+	lea	hl, iy + 0
+	ld	bc, 2
+	add	hl, bc
+	bit	2, a
+	jq	z, BB0_9
+	push	hl
+	pop	iy
+BB0_9:
+	ld	l, (ix + -3)
+	ld	h, (ix + -2)
+	ld	a, l
+	lea	hl, iy + 0
+	ld	de, -2
+	add	hl, de
+	bit	1, a
+	jq	z, BB0_11
+	push	hl
+	pop	iy
+BB0_11:
+	ld	l, (ix + -3)
+	ld	h, (ix + -2)
+	ld.sis	bc, 1
+	call	__sand
+	ld	a, l
+	ld	l, 1
+	xor	a, l
+	ld	bc, (ix + -9)
+	push	bc
+	pop	hl
+	ld	de, 2
+	add	hl, de
+	bit	0, a
+	jq	nz, BB0_13
+	push	hl
+	pop	bc
+BB0_13:
+	ld	l, (ix + -3)
+	ld	h, (ix + -2)
+	ld	a, l
+	push	bc
+	pop	hl
+	ld	de, -2
+	add	hl, de
+	bit	3, a
+	jq	z, BB0_15
+	push	hl
+	pop	bc
+BB0_15:
+	ld	(ix + -9), bc
+	push	bc
+	ld	(ix + -6), iy
+	push	iy
+	call	_DrawSprite
+	pop	hl
+	pop	hl
+	ld	hl, 1
+	push	hl
+	call	_gfx_Blit
+	pop	hl
+BB0_16:
+	ld	hl, -720868
+	push	de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	l, e
+	ld	h, d
+	pop	de
+	ld	a, l
+	cp	a, 64
+	jq	nz, BB0_6
+	or	a, a
+	sbc	hl, hl
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_PrintCentered
+_PrintCentered:
+	call	__frameset0
+	ld	hl, (ix + 6)
+	push	hl
+	call	_gfx_GetStringWidth
+	push	hl
+	pop	de
+	pop	hl
+	ld	hl, 320
+	or	a, a
+	sbc	hl, de
+	ld	c, 1
+	call	__ishru
+	ld	de, 116
+	push	de
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	call	_gfx_PrintStringXY
+	ld	sp, ix
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_DrawSprite
+_DrawSprite:
+	call	__frameset0
+	ld	hl, (_background)
+	ld	de, (_DrawSprite.oldX)
+	ld	bc, (_DrawSprite.oldY)
+	push	bc
+	push	de
+	push	hl
+	call	_gfx_Sprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (_background)
+	ld	de, (ix + 9)
+	push	de
+	ld	de, (ix + 6)
+	push	de
+	push	hl
+	call	_gfx_GetSprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 9)
+	push	hl
+	ld	hl, (ix + 6)
+	push	hl
+	ld	hl, _shape_data
+	push	hl
+	call	_gfx_TransparentSprite
+	pop	hl
+	pop	hl
+	pop	hl
+	ld	hl, (ix + 6)
+	ld	(_DrawSprite.oldX), hl
+	ld	hl, (ix + 9)
+	ld	(_DrawSprite.oldY), hl
+	pop	ix
+	ret
+	section	.text,"ax",@progbits
+
+	section	.text,"ax",@progbits
+	public	_PrintText
+_PrintText:
+	ld	hl, -3
+	call	__frameset
+	ld	a, (ix + 6)
+	ld	l, (ix + 9)
+	ld	de, (ix + 12)
+	ld	(ix + -3), de
+	ld	e, a
+	push	de
+	push	hl
+	call	_os_SetCursorPos
+	pop	hl
+	pop	hl
+	ld	hl, (ix + -3)
+	ld	(ix + 6), hl
+	pop	hl
+	pop	ix
+	jp	_os_PutStrFull
+	section	.text,"ax",@progbits
+
+	section	.bss,"aw",@nobits
+	public	_background_data
+_background_data:
+	rb	434
+
+	section	.data,"aw",@progbits
+	public	_background
+_background:
+	dl	_background_data
+
+	section	.rodata,"a",@progbits
+	private	L_.str
+L_.str:
+	db	"DODGE THE CIRCLES || LanguageArtsGrade",000o
+
+	section	.data,"aw",@progbits
+	private	_DrawSprite.oldX
+_DrawSprite.oldX:
+	dl	152
+
+	section	.data,"aw",@progbits
+	private	_DrawSprite.oldY
+_DrawSprite.oldY:
+	dl	106
+
+	ident	"clang version 12.0.0 (https://github.com/jacobly0/llvm-project 170be88120e3aa88c20eea5615ba76b8f1d6c647)"
+	extern	_random
+	extern	__Unwind_SjLj_Register
+	extern	__frameset
+	extern	_global_palette
+	extern	_gfx_SetTransparentColor
+	extern	_gfx_Begin
+	extern	_kb_Scan
+	extern	_gfx_GetStringWidth
+	extern	_gfx_SetPalette
+	extern	_shape_data
+	extern	_os_ClrLCD
+	extern	_gfx_GetSprite
+	extern	__sand
+	extern	_os_DrawStatusBar
+	extern	__ishru
+	extern	_gfx_SetDraw
+	extern	_gfx_FillScreen
+	extern	__Unwind_SjLj_Unregister
+	extern	_gfx_Blit
+	extern	__iremu
+	extern	_os_PutStrFull
+	extern	_gfx_Sprite
+	extern	_bgcirc_data
+	extern	_gfx_End
+	extern	_os_GetCSC
+	extern	_gfx_Sprite_NoClip
+	extern	_gfx_PrintStringXY
+	extern	__frameset0
+	extern	_gfx_TransparentSprite
+	extern	_os_HomeUp
+	extern	_os_SetCursorPos
