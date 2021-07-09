@@ -68,16 +68,16 @@ int main(void)
         {
             kb_key_t arrows;
 
-            /* Scan the keypad to update kb_Data */
+            
             kb_Scan();
 
-            /* Get the arrow key statuses */
+           
             arrows = kb_Data[7];
 
-            /* Check if any arrows are pressed */
+           
             if (arrows)
             {
-                /* Do different directions depending on the keypress */
+                
                 if (arrows & kb_Right)
                 {
                     x += 2;
@@ -95,11 +95,9 @@ int main(void)
                     y -= 2;
                 }
 
-                /* Render the sprite */
                 DrawSprite(x, y);
 
-                /* Copy the buffer to the screen */
-                /* Same as gfx_Blit(gfx_buffer) */
+       
                 gfx_BlitBuffer();
             }
 
@@ -126,13 +124,12 @@ void DrawSprite(int x, int y)
     static int oldX = START_X;
     static int oldY = START_Y;
 
-    /* Render the original background */
+   
     gfx_Sprite(background, oldX, oldY);
 
-    /* Get the background behind the sprite */
+   
     gfx_GetSprite(background, x, y);
 
-    /* Render the sprite */
     gfx_TransparentSprite(shape, x, y);
 
     oldX = x;
